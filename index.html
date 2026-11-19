@@ -6,23 +6,32 @@
 <title>RIKA AI - Groq Ultra Edition</title>
 <style>
 :root{--neon-cyan:#00ffff;--neon-blue:#0088ff;--dark-bg:#030712;--card-bg:rgba(0,255,255,.04);--border-glow:rgba(0,255,255,.3)}
-*{box-sizing:border-box}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{margin:0;padding:0;background:var(--dark-bg);color:var(--neon-cyan);font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;display:flex;flex-direction:column;align-items:center;min-height:100vh;overflow-x:hidden}
 .container{text-align:center;width:92%;max-width:390px;padding:15px 0 30px}
 h1{font-size:24px;letter-spacing:4px;margin:5px 0 2px;text-shadow:0 0 15px var(--neon-cyan),0 0 30px var(--neon-blue);background:linear-gradient(45deg,#00ffff,#88ccff);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .clickable-i{cursor:pointer;transition:.3s;display:inline-block}
 .clickable-i:hover{color:#ff00ff;text-shadow:0 0 12px #ff00ff;transform:scale(1.2)}
 .subtitle{color:#66b3ff;font-size:11px;margin-bottom:15px;letter-spacing:1px}
-.voice-controls{display:flex;align-items:center;justify-content:center;gap:14px;margin:0 auto 15px}
-.reactor-btn{width:95px;height:95px;background:radial-gradient(circle,#00ffff 0%,#004466 70%,#020b14 100%);border-radius:50%;border:3px solid var(--neon-cyan);box-shadow:0 0 20px var(--neon-cyan),inset 0 0 15px var(--neon-cyan);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.3s;animation:pulse 2s infinite}
+.reactor-btn{position:relative;width:95px;height:95px;background:radial-gradient(circle,#00ffff 0%,#004466 70%,#020b14 100%);border-radius:50%;border:3px solid var(--neon-cyan);box-shadow:0 0 20px var(--neon-cyan),inset 0 0 15px var(--neon-cyan);cursor:pointer;margin:0 auto 6px;display:flex;align-items:center;justify-content:center;transition:transform .12s,background .3s;animation:pulse 2s infinite;touch-action:manipulation;user-select:none}
+.reactor-btn:active{transform:scale(.92)}
+.reactor-btn::after{content:'';position:absolute;inset:-3px;border-radius:50%;border:3px solid #fff;opacity:0;pointer-events:none}
+.reactor-btn.ping::after{animation:ring .65s ease-out}
 .reactor-btn.listening{background:radial-gradient(circle,#ff00ff 0%,#660066 70%,#020b14 100%);border-color:#ff00ff;box-shadow:0 0 30px #ff00ff,inset 0 0 20px #ff00ff;animation:fast-pulse .8s infinite}
-.reactor-btn span{color:#020b14;font-weight:900;font-size:12px;letter-spacing:1px}
-.listen-btn{background:rgba(0,255,255,.1);color:var(--neon-cyan);border:1.5px solid var(--neon-cyan);border-radius:10px;padding:10px 12px;font-size:11px;font-weight:bold;cursor:pointer;box-shadow:0 0 12px rgba(0,255,255,.25);transition:.2s}
-.listen-btn:hover{background:var(--neon-cyan);color:#030712}
+.reactor-btn.processing{background:radial-gradient(circle,#ffcc00 0%,#664400 70%,#020b14 100%);border-color:#ffcc00;box-shadow:0 0 25px #ffcc00,inset 0 0 15px #ffcc00;animation:fast-pulse 1.2s infinite}
+.reactor-btn span{color:#020b14;font-weight:900;font-size:12px;letter-spacing:1px;pointer-events:none}
+.status-line{font-size:10px;color:#66b3ff;min-height:14px;margin-bottom:10px;letter-spacing:.5px}
+@keyframes ring{0%{transform:scale(1);opacity:.95}100%{transform:scale(1.8);opacity:0}}
 @keyframes pulse{0%,100%{box-shadow:0 0 15px var(--neon-cyan),inset 0 0 8px var(--neon-cyan)}50%{box-shadow:0 0 30px var(--neon-cyan),inset 0 0 18px var(--neon-cyan)}}
-@keyframes fast-pulse{0%,100%{box-shadow:0 0 20px #ff00ff,inset 0 0 10px #ff00ff}50%{box-shadow:0 0 40px #ff00ff,inset 0 0 25px #ff00ff}}
-.output-card{background:var(--card-bg);border:1px solid var(--border-glow);border-radius:12px;padding:10px 12px;min-height:50px;max-height:95px;overflow-y:auto;font-size:12px;line-height:1.4;box-shadow:inset 0 0 12px rgba(0,255,255,.08);text-align:left;margin-bottom:10px;color:#e0ffff;word-break:break-word}
-.output-card a{color:#ff88ff;font-weight:bold}
+@keyframes fast-pulse{0%,100%{box-shadow:0 0 20px currentColor,inset 0 0 10px currentColor}50%{box-shadow:0 0 40px currentColor,inset 0 0 25px currentColor}}
+.reactor-btn.listening{color:#ff00ff}.reactor-btn.processing{color:#ffcc00}
+.output-card{background:var(--card-bg);border:1px solid var(--border-glow);border-radius:12px;margin-bottom:10px;box-shadow:inset 0 0 12px rgba(0,255,255,.08);text-align:left;color:#e0ffff;display:flex;flex-direction:column;overflow:hidden}
+.output-body{padding:10px 12px 6px;min-height:46px;max-height:96px;overflow-y:auto;font-size:12px;line-height:1.4;word-break:break-word;white-space:pre-wrap}
+.output-body a{color:#ff88ff;font-weight:bold}
+.output-tools{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:4px 8px 6px;border-top:1px dashed rgba(0,255,255,.18)}
+.tts-state{font-size:10px;color:#66b3ff;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mini-speak-btn{flex-shrink:0;background:rgba(0,255,255,.14);color:var(--neon-cyan);border:1px solid var(--neon-cyan);border-radius:6px;padding:3px 9px;font-size:10px;font-weight:bold;cursor:pointer;line-height:1.2}
+.mini-speak-btn:hover,.mini-speak-btn:active{background:var(--neon-cyan);color:#030712}
 .chat-bar{display:flex;gap:6px;margin-bottom:12px}
 .tabs{display:flex;justify-content:space-between;background:rgba(0,255,255,.05);border:1px solid var(--border-glow);border-radius:10px;padding:4px;margin-bottom:12px;gap:2px}
 .tab-btn{background:none;border:none;color:#88ccff;font-size:9px;cursor:pointer;padding:5px 1px;border-radius:6px;transition:.2s;font-weight:bold;flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:center;gap:2px;line-height:1.1;white-space:nowrap}
@@ -58,12 +67,16 @@ input::placeholder{color:rgba(0,255,255,.4)}
   <h1>R<span onclick="verifyAndOpenSettings()" class="clickable-i">i</span>KA</h1>
   <div class="subtitle">✨ Groq Ultra Edition ✨</div>
 
-  <div class="voice-controls">
-    <div class="reactor-btn" id="speakBtn" onclick="startListening()"><span id="btnText">TALK</span></div>
-    <button class="listen-btn" id="repeatBtn" onclick="speakLastReply()">🔊 सुनें</button>
-  </div>
+  <div class="reactor-btn" id="speakBtn" onpointerdown="pingTalk()" onclick="handleTalkClick()"><span id="btnText">TALK</span></div>
+  <div class="status-line" id="statusLine">टैप करके बोलें</div>
 
-  <div class="output-card" id="output">System Online (Groq). Tap 'TALK' or type below...</div>
+  <div class="output-card">
+    <div class="output-body" id="output">System Online (Groq). Tap 'TALK' or type below...</div>
+    <div class="output-tools">
+      <span class="tts-state" id="ttsState"></span>
+      <button type="button" class="mini-speak-btn" id="repeatBtn" onclick="speakLastReply()">🔊 सुनें</button>
+    </div>
+  </div>
 
   <div class="chat-bar">
     <input type="text" id="textPrompt" placeholder="यहाँ टाइप करके पूछें..." onkeydown="if(event.key==='Enter') sendTextPrompt()">
@@ -150,83 +163,334 @@ try { firebase.initializeApp(firebaseConfig); firebase.analytics(); } catch (e) 
 const output = document.getElementById('output');
 const speakBtn = document.getElementById('speakBtn');
 const btnText = document.getElementById('btnText');
+const statusLine = document.getElementById('statusLine');
+const ttsStateEl = document.getElementById('ttsState');
+const repeatBtn = document.getElementById('repeatBtn');
 
 const GROQ_MODELS = ["openai/gpt-oss-120b", "qwen/qwen3.6-27b", "openai/gpt-oss-20b"];
 const VISION_MODELS = ["qwen/qwen3.8-27b", "qwen/qwen3.6-27b"];
+const STT_MODELS = ["whisper-large-v3-turbo", "whisper-large-v3"];
 
 let GROQ_API_KEY = localStorage.getItem('rika_groq_key') || "";
 let userNotes = JSON.parse(localStorage.getItem('rika_notes') || "[]");
 let userAlarms = JSON.parse(localStorage.getItem('rika_alarms') || "[]");
 let chatHistory = JSON.parse(localStorage.getItem('rika_history') || "[]");
 let userLiveLocation = "Fetching location...";
-let activeRecognition = null;
 let lastSpokenText = "";
-let availableVoices = [];
 
-function loadVoices() {
-  if (!('speechSynthesis' in window)) return;
-  availableVoices = window.speechSynthesis.getVoices() || [];
-}
+/* =====================  TTS ENGINE  =====================
+   Order: native Android bridge (if APK has one) -> speechSynthesis (only if it
+   really starts) -> online Google TTS played through a single unlocked <audio>. */
+const TTS = { audio: new Audio(), unlocked: false, token: 0, state: 'idle', watchdog: null, cur: null };
 
-if ('speechSynthesis' in window) {
-  loadVoices();
-  window.speechSynthesis.onvoiceschanged = loadVoices;
+function makeSilentWav() {
+  const n = 800, buf = new ArrayBuffer(44 + n * 2), v = new DataView(buf);
+  const w = (o, s) => { for (let i = 0; i < s.length; i++) v.setUint8(o + i, s.charCodeAt(i)); };
+  w(0, 'RIFF'); v.setUint32(4, 36 + n * 2, true); w(8, 'WAVEfmt '); v.setUint32(16, 16, true);
+  v.setUint16(20, 1, true); v.setUint16(22, 1, true); v.setUint32(24, 8000, true); v.setUint32(28, 16000, true);
+  v.setUint16(32, 2, true); v.setUint16(34, 16, true); w(36, 'data'); v.setUint32(40, n * 2, true);
+  return URL.createObjectURL(new Blob([buf], { type: 'audio/wav' }));
 }
+const SILENT_URL = makeSilentWav();
+
+function unlockAudio() {
+  if (TTS.unlocked || TTS.state === 'speaking') return;
+  try {
+    TTS.audio.src = SILENT_URL;
+    const p = TTS.audio.play();
+    if (p && p.then) p.then(() => { TTS.unlocked = true; }).catch(() => {});
+    else TTS.unlocked = true;
+  } catch (e) {}
+}
+['pointerdown', 'touchstart', 'click', 'keydown'].forEach(ev => document.addEventListener(ev, unlockAudio, { passive: true }));
 
 function cleanSpeechText(text) {
-  return String(text || '')
-    .replace(/[*#_`~]/g, '')
-    .replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu, '')
-    .replace(/\s+/g, ' ')
-    .trim();
+  return String(text || '').replace(/[*#_`~]/g, '').replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu, '').replace(/\s+/g, ' ').trim();
+}
+
+function chunkText(t, max = 170) {
+  const parts = t.match(/[^।.!?\n]+[।.!?]*/g) || [t], out = [];
+  let cur = '';
+  for (const p0 of parts) {
+    const p = p0.trim(); if (!p) continue;
+    if ((cur + ' ' + p).trim().length <= max) { cur = (cur + ' ' + p).trim(); continue; }
+    if (cur) out.push(cur);
+    cur = '';
+    if (p.length <= max) { cur = p; continue; }
+    let line = '';
+    for (const wd of p.split(' ')) {
+      if ((line + ' ' + wd).trim().length > max) { out.push(line); line = wd; } else line = (line + ' ' + wd).trim();
+    }
+    cur = line;
+  }
+  if (cur) out.push(cur);
+  return out;
+}
+
+function setTtsStatus(s) {
+  TTS.state = s;
+  ttsStateEl.innerText = s === 'speaking' ? '🔊 बोल रही हूँ…' : s === 'error' ? '🔇 आवाज़ नहीं चली — 🔊 दबाएँ' : '';
+  repeatBtn.innerText = s === 'speaking' ? '⏹ रोकें' : '🔊 सुनें';
+}
+
+function nativeBridge() {
+  for (const n of ['AndroidTTS', 'Android', 'RikaNative', 'NativeTTS']) {
+    const o = window[n];
+    if (o && typeof o.speak === 'function') return o;
+  }
+  return null;
+}
+
+function stopSpeaking() {
+  TTS.token++;
+  clearTimeout(TTS.watchdog);
+  try { if ('speechSynthesis' in window) window.speechSynthesis.cancel(); } catch (e) {}
+  try { TTS.audio.onended = TTS.audio.onerror = null; TTS.audio.pause(); } catch (e) {}
+  try { const b = nativeBridge(); if (b && typeof b.stop === 'function') b.stop(); } catch (e) {}
+  setTtsStatus('idle');
+}
+
+function trySynth(chunks, tok, lang, onFail, onDone) {
+  if (!('speechSynthesis' in window) || typeof SpeechSynthesisUtterance === 'undefined') return false;
+  const voices = window.speechSynthesis.getVoices() || [];
+  if (!voices.length) return false;
+  const pre = lang === 'hi' ? 'hi' : 'en';
+  const voice = voices.find(v => v.lang && v.lang.toLowerCase().replace('_', '-').startsWith(pre));
+  if (lang === 'hi' && !voice) return false; // no Hindi voice -> online Hindi voice
+  let started = false, failed = false;
+  const fail = () => { if (failed || tok !== TTS.token) return; failed = true; try { window.speechSynthesis.cancel(); } catch (e) {} onFail(); };
+  TTS.watchdog = setTimeout(() => { if (!started) fail(); }, 2200);
+  const at = i => {
+    if (tok !== TTS.token || failed) return;
+    if (i >= chunks.length) { clearTimeout(TTS.watchdog); onDone(); return; }
+    const u = new SpeechSynthesisUtterance(chunks[i]);
+    TTS.cur = u;
+    if (voice) { u.voice = voice; u.lang = voice.lang; } else u.lang = lang === 'hi' ? 'hi-IN' : 'en-IN';
+    u.onstart = () => { started = true; clearTimeout(TTS.watchdog); };
+    u.onend = () => at(i + 1);
+    u.onerror = e => {
+      if (e && (e.error === 'canceled' || e.error === 'interrupted')) return;
+      if (!started) fail(); else at(i + 1);
+    };
+    window.speechSynthesis.speak(u);
+  };
+  setTimeout(() => at(0), 60);
+  return true;
+}
+
+function playOnline(chunks, tok, lang, onDone, onFail) {
+  let i = 0;
+  const urls = c => {
+    const q = encodeURIComponent(c);
+    return [`https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=${lang}&q=${q}`,
+            `https://translate.googleapis.com/translate_tts?ie=UTF-8&client=gtx&tl=${lang}&q=${q}`];
+  };
+  const next = () => {
+    if (tok !== TTS.token) return;
+    if (i >= chunks.length) { onDone(); return; }
+    const u = urls(chunks[i]); let k = 0;
+    const go = () => {
+      if (tok !== TTS.token) return;
+      const a = TTS.audio;
+      a.onended = () => { i++; next(); };
+      a.onerror = () => { if (tok !== TTS.token) return; if (++k < u.length) go(); else onFail(); };
+      a.src = u[k];
+      const p = a.play();
+      if (p && p.catch) p.catch(err => {
+        if (tok !== TTS.token || (err && err.name === 'AbortError')) return;
+        if (err && err.name === 'NotAllowedError') onFail();
+        else if (++k < u.length) go(); else onFail();
+      });
+    };
+    go();
+  };
+  next();
 }
 
 function speak(text) {
   const clean = cleanSpeechText(text);
   if (!clean) return;
   lastSpokenText = clean;
+  stopSpeaking();
+  const tok = TTS.token;
+  setTtsStatus('speaking');
+  const done = () => { if (tok === TTS.token) setTtsStatus('idle'); };
+  const lang = /[\u0900-\u097F]/.test(clean) ? 'hi' : 'en';
+  const chunks = chunkText(clean);
 
-  if (!('speechSynthesis' in window)) {
-    output.innerText += "\n(इस डिवाइस में TTS उपलब्ध नहीं है)";
-    return;
+  const b = nativeBridge();
+  if (b) {
+    try { b.speak(clean); setTimeout(done, Math.min(30000, 1500 + clean.length * 90)); return; } catch (e) {}
   }
-
-  try { window.speechSynthesis.cancel(); } catch (e) {}
-
-  setTimeout(() => {
-    try {
-      const u = new SpeechSynthesisUtterance(clean);
-      const voices = window.speechSynthesis.getVoices() || availableVoices;
-      const hiVoice = voices.find(v => v.lang && v.lang.toLowerCase().includes('hi'))
-        || voices.find(v => v.lang && v.lang.toLowerCase().includes('en-in'))
-        || voices[0];
-      if (hiVoice) {
-        u.voice = hiVoice;
-        u.lang = hiVoice.lang || 'hi-IN';
-      } else {
-        u.lang = 'hi-IN';
-      }
-      u.rate = 1.0;
-      u.pitch = 1.0;
-      u.onerror = () => {
-        // Fallback retry without custom voice if engine rejects voice object
-        try {
-          const fallback = new SpeechSynthesisUtterance(clean);
-          fallback.lang = 'hi-IN';
-          window.speechSynthesis.speak(fallback);
-        } catch (err) {}
-      };
-      window.speechSynthesis.speak(u);
-    } catch (e) {}
-  }, 80);
+  const online = () => {
+    if (tok !== TTS.token) return;
+    playOnline(chunks, tok, lang, done, () => { if (tok === TTS.token) setTtsStatus('error'); });
+  };
+  if (!trySynth(chunks, tok, lang, online, done)) online();
 }
 
 window.speakLastReply = function () {
-  const textToRead = lastSpokenText || output.innerText;
-  if (!textToRead) return;
-  speak(textToRead);
+  if (TTS.state === 'speaking') { stopSpeaking(); return; }
+  const t = lastSpokenText || output.innerText;
+  if (t) speak(t);
 };
 
+/* =====================  STT / TALK BUTTON  ===================== */
+let sttState = 'idle', activeRecognition = null, activeRecorder = null, srBroken = false;
+
+function setTalkState(s) {
+  sttState = s;
+  speakBtn.classList.remove('listening', 'processing');
+  const map = {
+    idle: ['TALK', 'टैप करके बोलें'],
+    ping: ['PING', 'Mic चेक हो रहा है…'],
+    listening: ['LISTEN', '🎤 सुन रही हूँ… रोकने के लिए फिर टैप करें'],
+    recording: ['REC', '🔴 रिकॉर्डिंग… चुप होते ही अपने-आप रुकेगी'],
+    processing: ['WAIT', '⏳ आवाज़ समझ रही हूँ…']
+  };
+  btnText.innerText = map[s][0];
+  statusLine.innerText = map[s][1];
+  if (s === 'listening' || s === 'recording') speakBtn.classList.add('listening');
+  if (s === 'processing') speakBtn.classList.add('processing');
+}
+
+window.pingTalk = function () {
+  speakBtn.classList.remove('ping'); void speakBtn.offsetWidth; speakBtn.classList.add('ping');
+  try { if (navigator.vibrate) navigator.vibrate(25); } catch (e) {}
+  unlockAudio();
+};
+
+window.handleTalkClick = function () {
+  stopSpeaking();
+  if (sttState === 'listening' || sttState === 'recording') { stopListening(); return; }
+  if (sttState === 'processing') return;
+  setTalkState('ping');
+  output.innerText = "📡 Mic चेक हो रहा है...";
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (SR && !srBroken) startSR(SR); else startRecorder();
+};
+
+function stopListening() {
+  try { if (activeRecognition) activeRecognition.stop(); } catch (e) {}
+  try { if (activeRecorder && activeRecorder.state !== 'inactive') activeRecorder.stop(); } catch (e) {}
+}
+
+function startSR(SR) {
+  let finished = false, got = false, startTimer = null;
+  const fallback = () => { if (finished) return; finished = true; clearTimeout(startTimer); srBroken = true; activeRecognition = null; startRecorder(); };
+  try {
+    const rec = new SR();
+    activeRecognition = rec;
+    rec.lang = 'hi-IN'; rec.interimResults = true; rec.continuous = false; rec.maxAlternatives = 1;
+    startTimer = setTimeout(() => { if (sttState === 'ping') { try { rec.abort(); } catch (e) {} fallback(); } }, 2500);
+    rec.onstart = () => { clearTimeout(startTimer); setTalkState('listening'); output.innerText = "🎤 सुन रही हूँ..."; };
+    rec.onresult = e => {
+      let fin = '', interim = '';
+      for (let i = e.resultIndex; i < e.results.length; i++) {
+        const r = e.results[i];
+        if (r.isFinal) fin += r[0].transcript; else interim += r[0].transcript;
+      }
+      if (interim && !fin) output.innerText = "🎤 " + interim;
+      if (fin && !finished) { got = true; finished = true; setTalkState('idle'); runCommand(fin.trim()); }
+    };
+    rec.onerror = e => {
+      if (finished) return;
+      if (['not-allowed', 'service-not-allowed', 'network', 'audio-capture', 'language-not-supported'].includes(e.error)) { fallback(); return; }
+      finished = true; clearTimeout(startTimer); activeRecognition = null; setTalkState('idle');
+      if (e.error === 'no-speech') output.innerText = "कुछ सुनाई नहीं दिया। फिर से TALK दबाएँ।";
+      else if (e.error !== 'aborted') output.innerText = "Mic error (" + e.error + "). फिर कोशिश करें या टाइप करें।";
+    };
+    rec.onend = () => {
+      clearTimeout(startTimer); activeRecognition = null;
+      if (!finished) { finished = true; if (!got) { setTalkState('idle'); output.innerText = "कुछ सुनाई नहीं दिया। फिर से TALK दबाएँ।"; } }
+    };
+    rec.start();
+  } catch (err) { fallback(); }
+}
+
+function micErrorText(e) {
+  const n = e && e.name;
+  if (n === 'NotAllowedError' || n === 'SecurityError') return "🎙️ Mic permission ब्लॉक है। फ़ोन की App Settings → Permissions → Microphone चालू करें (APK में RECORD_AUDIO permission चाहिए)। तब तक नीचे टाइप करके पूछें।";
+  if (n === 'NotFoundError') return "🎙️ कोई माइक्रोफ़ोन नहीं मिला। नीचे टाइप करके पूछें।";
+  return "🎙️ माइक शुरू नहीं हो सका (" + (n || 'error') + "). नीचे टाइप करके पूछें।";
+}
+
+async function startRecorder() {
+  if (!GROQ_API_KEY) { setTalkState('idle'); output.innerText = "इस WebView में सीधा STT नहीं चलता। Voice के लिए Groq API key जोड़ें ('i' दबाएँ) या नीचे टाइप करें।"; return; }
+  if (!window.isSecureContext || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || typeof MediaRecorder === 'undefined') {
+    setTalkState('idle');
+    output.innerText = "इस WebView में Mic recording उपलब्ध नहीं (https/permission चाहिए)। नीचे टाइप करके पूछें या Chrome में खोलें।";
+    return;
+  }
+  let stream;
+  try { stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } }); }
+  catch (e) { setTalkState('idle'); output.innerText = micErrorText(e); return; }
+
+  const mime = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4', 'audio/ogg'].find(m => MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(m)) || '';
+  let mr;
+  try { mr = new MediaRecorder(stream, mime ? { mimeType: mime } : undefined); }
+  catch (e) { stream.getTracks().forEach(t => t.stop()); setTalkState('idle'); output.innerText = micErrorText(e); return; }
+
+  activeRecorder = mr;
+  const parts = []; let heard = false, silentSince = 0, timer = null, ctx = null;
+  const t0 = Date.now();
+  const cleanup = () => { clearInterval(timer); try { if (ctx) ctx.close(); } catch (e) {} stream.getTracks().forEach(t => t.stop()); activeRecorder = null; };
+
+  mr.ondataavailable = e => { if (e.data && e.data.size) parts.push(e.data); };
+  mr.onstop = async () => {
+    cleanup();
+    const blob = new Blob(parts, { type: mr.mimeType || mime || 'audio/webm' });
+    if (!heard || blob.size < 1500) { setTalkState('idle'); output.innerText = "कुछ सुनाई नहीं दिया। फिर से TALK दबाएँ।"; return; }
+    setTalkState('processing');
+    output.innerText = "⏳ आवाज़ को टेक्स्ट में बदल रही हूँ...";
+    try {
+      const text = await transcribe(blob);
+      setTalkState('idle');
+      if (text) runCommand(text); else output.innerText = "आवाज़ समझ नहीं आई। फिर कोशिश करें।";
+    } catch (e) { setTalkState('idle'); output.innerText = "STT Error: " + e.message; }
+  };
+
+  try {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    ctx = new AC();
+    if (ctx.resume) ctx.resume();
+    const an = ctx.createAnalyser(); an.fftSize = 1024;
+    ctx.createMediaStreamSource(stream).connect(an);
+    const buf = new Uint8Array(an.fftSize);
+    timer = setInterval(() => {
+      an.getByteTimeDomainData(buf);
+      let s = 0; for (let i = 0; i < buf.length; i++) { const x = (buf[i] - 128) / 128; s += x * x; }
+      const rms = Math.sqrt(s / buf.length), now = Date.now();
+      if (rms > 0.03) { heard = true; silentSince = 0; } else if (heard && !silentSince) silentSince = now;
+      if ((heard && silentSince && now - silentSince > 1400) || now - t0 > 20000 || (!heard && now - t0 > 7000)) stopListening();
+    }, 100);
+  } catch (e) {
+    heard = true; // no analyser: record 8s or until tap
+    timer = setInterval(() => { if (Date.now() - t0 > 8000) stopListening(); }, 200);
+  }
+  mr.start(250);
+  setTalkState('recording');
+  output.innerText = "🎤 बोलिए... (रिकॉर्डिंग चालू)";
+}
+
+async function transcribe(blob) {
+  const ext = blob.type.includes('mp4') ? 'mp4' : blob.type.includes('ogg') ? 'ogg' : 'webm';
+  let lastErr = "STT failed";
+  for (const model of STT_MODELS) {
+    try {
+      const fd = new FormData();
+      fd.append('file', blob, 'speech.' + ext);
+      fd.append('model', model); fd.append('language', 'hi'); fd.append('response_format', 'json'); fd.append('temperature', '0');
+      const res = await fetch("https://api.groq.com/openai/v1/audio/transcriptions", { method: 'POST', headers: { 'Authorization': `Bearer ${GROQ_API_KEY}` }, body: fd });
+      const data = await res.json().catch(() => ({}));
+      if (typeof data.text === 'string') return data.text.trim();
+      lastErr = (data.error && data.error.message) || lastErr;
+    } catch (e) { lastErr = e.message; }
+  }
+  throw new Error(lastErr);
+}
+
+/* =====================  APP LOGIC (unchanged behaviour)  ===================== */
 function fetchLiveLocation() {
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(
@@ -245,7 +509,7 @@ window.onload = function () {
   document.getElementById('apiKey').value = GROQ_API_KEY;
   updateUI();
   fetchLiveLocation();
-  loadVoices();
+  try { if ('speechSynthesis' in window) window.speechSynthesis.getVoices(); } catch (e) {}
   setInterval(checkAlarms, 1000);
   if (!GROQ_API_KEY) output.innerText = "Groq API key missing. Tap the 'i' in RIKA to add it.";
 };
@@ -360,7 +624,6 @@ window.calculateMath = function () {
   } catch (e) { output.innerText = "Invalid calculation"; speak("गलत समीकरण"); }
 };
 
-/* ================= VOICE COMMAND AUTOMATION ================= */
 function openTab(url, label) {
   const w = window.open(url, '_blank');
   if (w) {
@@ -410,7 +673,6 @@ function tryAutomation(text) {
   return false;
 }
 
-/* ================= QUERY HANDLER ================= */
 async function handleAdvancedQuery(text, context) {
   if (tryAutomation(text)) return;
 
@@ -468,7 +730,7 @@ async function handleAdvancedQuery(text, context) {
 }
 
 window.sendTextPrompt = function () {
-  if ('speechSynthesis' in window) { try { window.speechSynthesis.cancel(); } catch (e) {} }
+  stopSpeaking();
   const inputEl = document.getElementById('textPrompt');
   const text = inputEl.value.trim();
   if (!text) return;
@@ -486,68 +748,6 @@ function runCommand(text) {
   handleAdvancedQuery(text, context);
 }
 
-window.startListening = function () {
-  if ('speechSynthesis' in window) { try { window.speechSynthesis.cancel(); } catch (e) {} }
-  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SR) {
-    output.innerText = "इस ऐप/ब्राउज़र में वॉइस इनपुट (SpeechRecognition) उपलब्ध नहीं है। टाइप करके पूछें या Chrome में खोलें।";
-    return;
-  }
-  if (activeRecognition) {
-    try { activeRecognition.stop(); } catch (e) {}
-    activeRecognition = null;
-    speakBtn.classList.remove('listening');
-    btnText.innerText = "TALK";
-    return;
-  }
-
-  try {
-    const rec = new SR();
-    activeRecognition = rec;
-    rec.lang = 'hi-IN';
-    rec.interimResults = false;
-    rec.maxAlternatives = 1;
-
-    rec.onstart = () => {
-      speakBtn.classList.add('listening');
-      btnText.innerText = "LISTENING";
-      output.innerText = "🎤 सुन रही हूँ...";
-    };
-
-    rec.onresult = (e) => {
-      const text = e.results && e.results[0] && e.results[0][0] ? e.results[0][0].transcript : "";
-      if (text) runCommand(text);
-    };
-
-    rec.onerror = (e) => {
-      speakBtn.classList.remove('listening');
-      btnText.innerText = "TALK";
-      activeRecognition = null;
-      if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
-        output.innerText = "माइक की अनुमति नहीं मिली। फोन की App Permissions में Microphone चालू करें या Chrome खोलें।";
-      } else if (e.error === 'no-speech') {
-        output.innerText = "आवाज़ सुनाई नहीं दी। दोबारा TALK दबाकर बोलें।";
-      } else {
-        output.innerText = "Mic error (" + e.error + "): APK WebView में वॉइस सपोर्ट सीमित हो सकता है, नीचे टाइप करके पूछें।";
-      }
-    };
-
-    rec.onend = () => {
-      speakBtn.classList.remove('listening');
-      btnText.innerText = "TALK";
-      activeRecognition = null;
-    };
-
-    rec.start();
-  } catch (err) {
-    speakBtn.classList.remove('listening');
-    btnText.innerText = "TALK";
-    activeRecognition = null;
-    output.innerText = "वॉइस शुरू नहीं हो सकी। नीचे टाइप करके पूछें।";
-  }
-};
-
-/* ================= IMAGE / VISION ================= */
 window.previewImage = function () {
   const f = document.getElementById('imageInput').files[0];
   const box = document.getElementById('previewBox');
@@ -594,7 +794,7 @@ function compressImage(file, maxSide = 1280, quality = 0.8) {
 }
 
 window.analyzeImage = async function () {
-  if ('speechSynthesis' in window) { try { window.speechSynthesis.cancel(); } catch (e) {} }
+  stopSpeaking();
   const fileInput = document.getElementById('imageInput');
   const scanBtn = document.getElementById('scanBtn');
   const customPrompt = document.getElementById('visionPrompt').value.trim();
@@ -649,4 +849,3 @@ window.analyzeImage = async function () {
 </script>
 </body>
 </html>
-
